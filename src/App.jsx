@@ -34,6 +34,20 @@ const App = () => {
       objectID: 1,
     },
   ];
+
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  /* Callback handler */
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  /* Filter function */
+  /* Could also be an arrow function */
+  const searchedStories = stories.filter(function (story) {
+    return story.title.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
     <div>
       <h1>
@@ -42,11 +56,17 @@ const App = () => {
         My Hacker Stories
       </h1>
 
-      <Search />
+      {/* Pass the callback handler as a prop to the Search child component */}
+      <Search onSearch={handleSearch} searchTerm={searchTerm} />
+
+      {/* We can also add de searchTerm here directly instead of passing it as a prop to the Search child component */}
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
 
       <hr />
 
-      <List list={stories} />
+      <List list={searchedStories} />
 
       {/* Use the index of the element as the key. Only use it as last resort */}
       {/* <ul>
@@ -58,54 +78,41 @@ const App = () => {
   );
 };
 
-const Search = () => {
-  const [searchTerm, setSearchTerm] = React.useState("");
+/* We can also destructure the props in the component signature */
+/* This can help us avoiding using the block body */
+const Search = ({ onSearch, searchTerm }) => (
+  /* Props destructuring example */
+  /* const { searchTerm, onSearch } = props; */
 
-  /* Event handler example in JSX */
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  <div>
+    <label htmlFor="search">Search: </label>
+    {/* Add the event handler as an attribute to the element in JSX with onChange */}
+    {/* Call the callback handler when the value of the input changes */}
+    <input id="search" type="text" value={searchTerm} onChange={onSearch} />
 
-  const handleBlur = (event) => {
-    console.log(event);
-    console.log(event.target.value);
-  };
-
-  return (
-    <div>
-      <label htmlFor="search">Search: </label>
-      {/* Add the event handler as an attribute to the element in JSX with onChange */}
-      <input
-        id="search"
-        type="text"
-        onChange={handleChange}
-        onBlur={handleBlur}
-      />
-
-      <p>
-        Searching for <strong>{searchTerm}</strong>
-      </p>
-    </div>
-  );
-};
+    <p>
+      Searching for <strong>{searchTerm}</strong>
+    </p>
+  </div>
+);
 
 /* Arrow function example */
-const List = (props) => (
+const List = ({ list }) => (
   <ul>
-    {props.list.map((item) => {
-      return <Item item={item} />;
+    {list.map((item) => {
+      return <Item key={item.objectID} item={item} />;
     })}
   </ul>
 );
 
-const Item = (props) => (
-  <li key={props.item.objectID}>
+const Item = ({ item }) => (
+  <li>
     <span>
-      <a href={props.item.url}>{props.item.title}</a>
+      <a href={item.url}>{item.title}</a>
     </span>
-    <span>{props.item.author}</span>
-    <span>{props.item.num_comments}</span>
-    <span>{props.item.points}</span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
   </li>
 );
 
