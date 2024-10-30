@@ -35,7 +35,13 @@ const App = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem("search") || ""
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem("search", searchTerm);
+  }, [searchTerm]);
 
   /* Callback handler */
   const handleSearch = (event) => {
@@ -97,23 +103,46 @@ const Search = ({ onSearch, searchTerm }) => (
 );
 
 /* Arrow function example */
+/* Spread and rest operators example */
 const List = ({ list }) => (
   <ul>
-    {list.map((item) => {
-      return <Item key={item.objectID} item={item} />;
-    })}
+    {/* Here the objectID is excluded from the list that is passed */}
+    {list.map(({ objectID, ...item }) => (
+      <Item key={objectID} {...item} />
+    ))}
   </ul>
 );
 
-const Item = ({ item }) => (
+/* Spread and rest operators example */
+const Item = ({ title, url, author, num_comments, points }) => (
   <li>
     <span>
-      <a href={item.url}>{item.title}</a>
+      <a href={url}>{title}</a>
     </span>
-    <span>{item.author}</span>
-    <span>{item.num_comments}</span>
-    <span>{item.points}</span>
+    <span>{author}</span>
+    <span>{num_comments}</span>
+    <span>{points}</span>
   </li>
 );
+
+/* Nested destructuring example */
+/* const Item = ({ 
+  item: { 
+    title, 
+    url, 
+    author, 
+    num_comments, 
+    points 
+  } 
+}) => (
+  <li>
+    <span>
+      <a href={url}>{title}</a>
+    </span>
+    <span>{author}</span>
+    <span>{num_comments}</span>
+    <span>{points}</span>
+  </li>
+); */
 
 export default App;
