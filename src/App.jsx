@@ -15,6 +15,19 @@ const title = 'React' */
   return title;
 } */
 
+/* Custom hook declaration */
+const useStorageState = (key, initialState) => {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem("value", value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
+
 const App = () => {
   const stories = [
     {
@@ -35,13 +48,16 @@ const App = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = React.useState(
+  const [searchTerm, setSearchTerm] = useStorageState("search", "React");
+
+  /* Using useState and useEffect hooks to manage state and side effects in React */
+  /* const [searchTerm, setSearchTerm] = React.useState(
     localStorage.getItem("search") || ""
   );
 
   React.useEffect(() => {
     localStorage.setItem("search", searchTerm);
-  }, [searchTerm]);
+  }, [searchTerm]); */
 
   /* Callback handler */
   const handleSearch = (event) => {
@@ -63,7 +79,12 @@ const App = () => {
       </h1>
 
       {/* Pass the callback handler as a prop to the Search child component */}
-      <Search onSearch={handleSearch} searchTerm={searchTerm} />
+      <InputWithLabel
+        id={"search"}
+        label={"Search"}
+        value={searchTerm}
+        onInputChange={handleSearch}
+      />
 
       {/* We can also add de searchTerm here directly instead of passing it as a prop to the Search child component */}
       <p>
@@ -86,20 +107,22 @@ const App = () => {
 
 /* We can also destructure the props in the component signature */
 /* This can help us avoiding using the block body */
-const Search = ({ onSearch, searchTerm }) => (
+const InputWithLabel = ({ id, label, value, type = "text", onInputChange }) => (
   /* Props destructuring example */
   /* const { searchTerm, onSearch } = props; */
 
-  <div>
-    <label htmlFor="search">Search: </label>
+  /* React fragment instead of div as a wrapper */
+  /* You can also use React.Fragment(this is the abbreviated syntax) */
+  <>
+    <label htmlFor={id}>{label}</label>
+    &nbsp;
     {/* Add the event handler as an attribute to the element in JSX with onChange */}
     {/* Call the callback handler when the value of the input changes */}
-    <input id="search" type="text" value={searchTerm} onChange={onSearch} />
-
+    <input id={id} type={type} value={value} onChange={onInputChange} />
     <p>
-      Searching for <strong>{searchTerm}</strong>
+      Searching for <strong>{label}</strong>
     </p>
-  </div>
+  </>
 );
 
 /* Arrow function example */
