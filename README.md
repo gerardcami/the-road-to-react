@@ -1,6 +1,6 @@
 # Road to React - Proyecto de Aprendizaje
 
-Este repositorio contiene mi proyecto de aprendizaje de **React**, desarrollado a medida que avanzo en el libro *Road to React*. A lo largo del libro, voy incorporando conceptos clave de React, y cada capítulo añade nuevas funcionalidades y mejoras al proyecto.
+Este repositorio contiene mi proyecto de aprendizaje de **React**, desarrollado a medida que avanzo en el libro [*Road to React*](https://www.robinwieruch.de/the-road-to-react/), escrito por **Robin Wieruch**. Cada capítulo del libro introduce nuevos conceptos y técnicas de React, que implemento y subo progresivamente.
 
 ---
 
