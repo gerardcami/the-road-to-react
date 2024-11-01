@@ -22,7 +22,7 @@ const useStorageState = (key, initialState) => {
   );
 
   React.useEffect(() => {
-    localStorage.setItem("value", value);
+    localStorage.setItem(key, value);
   }, [value, key]);
 
   return [value, setValue];
@@ -48,7 +48,7 @@ const App = () => {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = useStorageState("search", "React");
+  const [searchTerm, setSearchTerm] = useStorageState("search", "Reat");
 
   /* Using useState and useEffect hooks to manage state and side effects in React */
   /* const [searchTerm, setSearchTerm] = React.useState(
@@ -81,10 +81,11 @@ const App = () => {
       {/* Pass the callback handler as a prop to the Search child component */}
       <InputWithLabel
         id={"search"}
-        label={"Search"}
         value={searchTerm}
         onInputChange={handleSearch}
-      />
+      >
+        Search:
+      </InputWithLabel>
 
       {/* We can also add de searchTerm here directly instead of passing it as a prop to the Search child component */}
       <p>
@@ -107,20 +108,26 @@ const App = () => {
 
 /* We can also destructure the props in the component signature */
 /* This can help us avoiding using the block body */
-const InputWithLabel = ({ id, label, value, type = "text", onInputChange }) => (
+const InputWithLabel = ({
+  id,
+  value,
+  type = "text",
+  onInputChange,
+  children,
+}) => (
   /* Props destructuring example */
   /* const { searchTerm, onSearch } = props; */
 
   /* React fragment instead of div as a wrapper */
   /* You can also use React.Fragment(this is the abbreviated syntax) */
   <>
-    <label htmlFor={id}>{label}</label>
+    <label htmlFor={id}>{children}</label>
     &nbsp;
     {/* Add the event handler as an attribute to the element in JSX with onChange */}
     {/* Call the callback handler when the value of the input changes */}
     <input id={id} type={type} value={value} onChange={onInputChange} />
     <p>
-      Searching for <strong>{label}</strong>
+      Searching for <strong>{value}</strong>
     </p>
   </>
 );
