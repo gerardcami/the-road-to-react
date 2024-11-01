@@ -29,7 +29,7 @@ const useStorageState = (key, initialState) => {
 };
 
 const App = () => {
-  const stories = [
+  const initialStories = [
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -49,6 +49,17 @@ const App = () => {
   ];
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "Reat");
+
+  const [stories, setStories] = React.useState(initialStories);
+
+  /* Callback handler */
+  const handleRemoveStory = (item) => {
+    const newStories = stories.filter(
+      (story) => item.objectID !== story.objectID
+    );
+
+    setStories(newStories);
+  };
 
   /* Using useState and useEffect hooks to manage state and side effects in React */
   /* const [searchTerm, setSearchTerm] = React.useState(
@@ -95,7 +106,7 @@ const App = () => {
 
       <hr />
 
-      <List list={searchedStories} />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
 
       {/* Use the index of the element as the key. Only use it as last resort */}
       {/* <ul>
@@ -152,17 +163,37 @@ const InputWithLabel = ({
 
 /* Arrow function example */
 /* Spread and rest operators example */
-const List = ({ list }) => (
+const List = ({ list, onRemoveItem }) => (
   <ul>
     {/* Here the objectID is excluded from the list that is passed */}
-    {list.map(({ objectID, ...item }) => (
+    {/* {list.map(({ objectID, ...item }) => (
       <Item key={objectID} {...item} />
+    ))} */}
+
+    {list.map((item) => (
+      <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
     ))}
   </ul>
 );
 
+const Item = ({ item, onRemoveItem }) => (
+  <li>
+    <span>
+      <a href={item.url}>{item.title}</a>
+    </span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
+    <span>
+      <button type="button" onClick={() => onRemoveItem(item)}>
+        Dismiss
+      </button>
+    </span>
+  </li>
+);
+
 /* Spread and rest operators example */
-const Item = ({ title, url, author, num_comments, points }) => (
+/* const Item = ({ title, url, author, num_comments, points }) => (
   <li>
     <span>
       <a href={url}>{title}</a>
@@ -171,7 +202,7 @@ const Item = ({ title, url, author, num_comments, points }) => (
     <span>{num_comments}</span>
     <span>{points}</span>
   </li>
-);
+); */
 
 /* Nested destructuring example */
 /* const Item = ({ 
