@@ -82,6 +82,7 @@ const App = () => {
       <InputWithLabel
         id={"search"}
         value={searchTerm}
+        isFocused
         onInputChange={handleSearch}
       >
         Search:
@@ -113,24 +114,41 @@ const InputWithLabel = ({
   value,
   type = "text",
   onInputChange,
+  isFocused,
   children,
-}) => (
+}) => {
+  const inputRef = React.useRef();
+
+  /* Imperative focus */
+  React.useEffect(() => {
+    if (isFocused) {
+      inputRef.current.focus();
+    }
+  }, [isFocused]);
   /* Props destructuring example */
   /* const { searchTerm, onSearch } = props; */
 
   /* React fragment instead of div as a wrapper */
   /* You can also use React.Fragment(this is the abbreviated syntax) */
-  <>
-    <label htmlFor={id}>{children}</label>
-    &nbsp;
-    {/* Add the event handler as an attribute to the element in JSX with onChange */}
-    {/* Call the callback handler when the value of the input changes */}
-    <input id={id} type={type} value={value} onChange={onInputChange} />
-    <p>
-      Searching for <strong>{value}</strong>
-    </p>
-  </>
-);
+  return (
+    <>
+      <label htmlFor={id}>{children}</label>
+      &nbsp;
+      {/* Add the event handler as an attribute to the element in JSX with onChange */}
+      {/* Call the callback handler when the value of the input changes */}
+      <input
+        ref={inputRef}
+        id={id}
+        type={type}
+        value={value}
+        onChange={onInputChange}
+      />
+      <p>
+        Searching for <strong>{value}</strong>
+      </p>
+    </>
+  );
+};
 
 /* Arrow function example */
 /* Spread and rest operators example */
