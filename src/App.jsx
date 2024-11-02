@@ -28,8 +28,11 @@ const useStorageState = (key, initialState) => {
   return [value, setValue];
 };
 
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
+
 const App = () => {
-  const initialStories = [
+  /* Fake API */
+  /* const initialStories = [
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -46,9 +49,8 @@ const App = () => {
       points: 5,
       objectID: 1,
     },
-  ];
-
-  const getAsyncStories = () =>
+  ]; */
+  /* const getAsyncStories = () =>
     new Promise((resolve) =>
       setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
     );
@@ -65,7 +67,7 @@ const App = () => {
           isLoading: true,
           isError: false,
         };
-      case "STORIES_FETCH_SUCCEESS": {
+      case "STORIES_FETCH_SUCCESS": {
         return {
           ...state,
           isLoading: false,
@@ -100,17 +102,24 @@ const App = () => {
   });
 
   React.useEffect(() => {
+    if (!searchTerm) return;
+
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
-    getAsyncStories()
+    fetch(`${API_ENDPOINT}${searchTerm}`)
+      .then((response) => response.json())
       .then((result) => {
         dispatchStories({
-          type: "STORIES_FETCH_SUCCEESS",
-          payload: result.data.stories,
+          type: "STORIES_FETCH_SUCCESS",
+          payload: result.hits,
         });
       })
-      .catch(() => dispatchStories({ type: "STORIES_FETCH_FAILURE" }));
-  }, []);
+      .catch(() =>
+        dispatchStories({
+          type: "STORIES_FETCH_SUCCESS",
+        })
+      );
+  }, [searchTerm]);
 
   /* Callback handler */
   const handleRemoveStory = (item) => {
@@ -136,9 +145,9 @@ const App = () => {
 
   /* Filter function */
   /* Could also be an arrow function */
-  const searchedStories = stories.data.filter(function (story) {
+  /* const searchedStories = stories.data.filter(function (story) {
     return story.title.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  }); */
 
   return (
     <div>
@@ -170,7 +179,7 @@ const App = () => {
       {stories.isLoading ? (
         <p>Loading...</p>
       ) : (
-        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+        <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
 
       {/* Use the index of the element as the key. Only use it as last resort */}
