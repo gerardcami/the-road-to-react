@@ -95,18 +95,21 @@ const App = () => {
   };
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "");
+
+  const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
+
   const [stories, dispatchStories] = React.useReducer(storiesReducer, {
     data: [],
     isLoading: false,
     isError: false,
   });
 
-  React.useEffect(() => {
-    if (!searchTerm) return;
+  const handleFetchStories = React.useCallback(() => {
+    /* if (!searchTerm) return; */
 
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
-    fetch(`${API_ENDPOINT}${searchTerm}`)
+    fetch(url)
       .then((response) => response.json())
       .then((result) => {
         dispatchStories({
@@ -119,7 +122,11 @@ const App = () => {
           type: "STORIES_FETCH_SUCCESS",
         })
       );
-  }, [searchTerm]);
+  }, [url]);
+
+  React.useEffect(() => {
+    handleFetchStories();
+  }, [handleFetchStories]);
 
   /* Callback handler */
   const handleRemoveStory = (item) => {
@@ -138,8 +145,12 @@ const App = () => {
     localStorage.setItem("search", searchTerm);
   }, [searchTerm]); */
 
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`);
+  };
+
   /* Callback handler */
-  const handleSearch = (event) => {
+  const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
   };
 
@@ -162,15 +173,18 @@ const App = () => {
         id={"search"}
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         Search:
       </InputWithLabel>
+      <button type="button" disabled={!searchTerm} onClick={handleSearchSubmit}>
+        Submit
+      </button>
 
       {/* We can also add de searchTerm here directly instead of passing it as a prop to the Search child component */}
-      <p>
+      {/* <p>
         Searching for <strong>{searchTerm}</strong>
-      </p>
+      </p> */}
 
       <hr />
 
