@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from "axios";
 import "./App.css";
 
 // Global variable will not be reloaded when the component is re-rendered
@@ -109,8 +110,24 @@ const App = () => {
 
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
-    fetch(url)
+    /* Using default fetch API to fetch data*/
+    /* fetch(url)
       .then((response) => response.json())
+      .then((result) => {
+        dispatchStories({
+          type: "STORIES_FETCH_SUCCESS",
+          payload: result.hits,
+        });
+      })
+      .catch(() =>
+        dispatchStories({
+          type: "STORIES_FETCH_SUCCESS",
+        })
+      ); */
+
+    /* Using the third-party library 'axios' to fetch data */
+    axios
+      .get(url)
       .then((result) => {
         dispatchStories({
           type: "STORIES_FETCH_SUCCESS",
