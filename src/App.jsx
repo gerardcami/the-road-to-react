@@ -105,11 +105,22 @@ const App = () => {
     isError: false,
   });
 
-  const handleFetchStories = React.useCallback(() => {
+  const handleFetchStories = React.useCallback(async () => {
     /* if (!searchTerm) return; */
 
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
+    try {
+      const result = await axios.get(url);
+      dispatchStories({
+        type: "STORIES_FETCH_SUCCESS",
+        payload: result.data.hits,
+      });
+    } catch {
+      dispatchStories({
+        type: "STORIES_FETCH_FAILURE",
+      });
+    }
     /* Using default fetch API to fetch data*/
     /* fetch(url)
       .then((response) => response.json())
@@ -121,12 +132,12 @@ const App = () => {
       })
       .catch(() =>
         dispatchStories({
-          type: "STORIES_FETCH_SUCCESS",
+          type: "STORIES_FETCH_FAILURE",
         })
       ); */
 
     /* Using the third-party library 'axios' to fetch data */
-    axios
+    /* axios
       .get(url)
       .then((result) => {
         dispatchStories({
@@ -136,9 +147,9 @@ const App = () => {
       })
       .catch(() =>
         dispatchStories({
-          type: "STORIES_FETCH_SUCCESS",
+          type: "STORIES_FETCH_FAILURE",
         })
-      );
+      ); */
   }, [url]);
 
   React.useEffect(() => {
