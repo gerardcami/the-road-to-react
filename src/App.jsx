@@ -173,8 +173,10 @@ const App = () => {
     localStorage.setItem("search", searchTerm);
   }, [searchTerm]); */
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = (event) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
+
+    event.preventDefault();
   };
 
   /* Callback handler */
@@ -196,23 +198,16 @@ const App = () => {
         My Hacker Stories
       </h1>
 
-      {/* Pass the callback handler as a prop to the Search child component */}
-      <InputWithLabel
-        id={"search"}
-        value={searchTerm}
-        isFocused
-        onInputChange={handleSearchInput}
-      >
-        Search:
-      </InputWithLabel>
-      <button type="button" disabled={!searchTerm} onClick={handleSearchSubmit}>
-        Submit
-      </button>
-
       {/* We can also add de searchTerm here directly instead of passing it as a prop to the Search child component */}
       {/* <p>
         Searching for <strong>{searchTerm}</strong>
       </p> */}
+
+      <SearchForm
+        searchTerm={searchTerm}
+        onSearchInput={handleSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+      />
 
       <hr />
 
@@ -233,6 +228,23 @@ const App = () => {
     </div>
   );
 };
+
+const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => (
+  <form onSubmit={onSearchSubmit}>
+    {/* Pass the callback handler as a prop to the Search child component */}
+    <InputWithLabel
+      id={"search"}
+      value={searchTerm}
+      isFocused
+      onInputChange={onSearchInput}
+    >
+      Search:
+    </InputWithLabel>
+    <button type="submit" disabled={!searchTerm}>
+      Submit
+    </button>
+  </form>
+);
 
 /* We can also destructure the props in the component signature */
 /* This can help us avoiding using the block body */
